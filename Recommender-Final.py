@@ -8,7 +8,7 @@ import html
 app = Flask(__name__)
 
 # Charger le modèle (chargé une seule fois au démarrage de l'application)
-model = joblib.load('Tree2.joblib')
+model = joblib.load('model_Stacking.joblib')
 
 # Connexion à MongoDB
 client = MongoClient('mongodb://localhost:27017')
@@ -55,6 +55,10 @@ def predict(date_of_birth, address, sexe, situation_familiale):
         prediction = model.predict(input_data)
         product_info = information_collection.find_one({"id": prediction[0]})
         
+        print(prediction)
+        
+        print(product_info)
+
         if product_info:
             product_info.pop("_id", None)
             product_info["description"] = html.escape(product_info["description"])
@@ -64,6 +68,10 @@ def predict(date_of_birth, address, sexe, situation_familiale):
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+    
+@app.route("/")
+def hello():
+    return "Hello, World!"
 
 if __name__ == '__main__':
     app.run(debug=True)
