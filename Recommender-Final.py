@@ -25,18 +25,22 @@ def determine_nature_client(address):
     lowercase_address = address.lower().replace(" ", "_")
     return "PARTICULIER" if "maroc" in lowercase_address else "MDM"
 
+def determine_situation_familiale (situation_familiale):
+    lowercase_situation_familiale = situation_familiale.lower()
+    return lowercase_situation_familiale
 def prepare_data(data):
     age = calculate_age(data['date_of_birth'])
     nature_client = determine_nature_client(data['address'])
+    situation_familiale =  determine_situation_familiale(data['situation_familiale'])
     input_data = pd.DataFrame([[age,
                                 1 if nature_client == 'MDM' else 0,
                                 1 if nature_client == 'PARTICULIER' else 0,
                                 1 if data['sexe'] == 'F' else 0,
                                 1 if data['sexe'] == 'M' else 0,
-                                1 if data['situation_familiale'] == 'single' else 0,
-                                1 if data['situation_familiale'] == 'Divorced' else 0,
-                                1 if data['situation_familiale'] == 'Married' else 0,
-                                1 if data['situation_familiale'] == 'widow' else 0]],
+                                1 if situation_familiale == 'single' else 0,
+                                1 if situation_familiale == 'divorced' else 0,
+                                1 if situation_familiale == 'married' else 0,
+                                1 if situation_familiale == 'widow' else 0]],
                                 columns=['Age', 'NATURE CLIENT_MDM', 'NATURE CLIENT_PARTICULER',
                                        'Sexe_F', 'Sexe_M', 'SITUATION FAMILIALE_C',
                                        'SITUATION FAMILIALE_D', 'SITUATION FAMILIALE_M', 'SITUATION FAMILIALE_V'])
