@@ -4,9 +4,10 @@ import pandas as pd
 from pymongo import MongoClient
 from datetime import datetime
 import html
+from flask_cors import CORS
 
 app = Flask(__name__)
-
+CORS(app)
 # Charger le modèle (chargé une seule fois au démarrage de l'application)
 model = joblib.load('model_Stacking.joblib')
 
@@ -57,19 +58,20 @@ def predict(date_of_birth, address, sexe, situation_familiale):
         })
 
         prediction = model.predict(input_data)
-        product_info = information_collection.find_one({"id": prediction[0]})
+        # product_info = information_collection.find_one({"id": prediction[0]})
         
         print(prediction)
         
-        print(product_info)
+        # print(product_info)
+        return jsonify({"prediction": prediction.tolist()})
 
-        if product_info:
+        """if product_info:
             product_info.pop("_id", None)
             product_info["description"] = html.escape(product_info["description"])
             return jsonify({"prediction": prediction.tolist(), "product_info": product_info})
         else:
             return jsonify({"error": "Aucune information trouvée pour la prédiction."}), 404
-
+"""
     except Exception as e:
         return jsonify({"error": str(e)}), 500
     
